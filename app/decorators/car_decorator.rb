@@ -14,4 +14,8 @@ class CarDecorator < ApplicationDecorator
   def manufactured
     object.manufactured.strftime "%Y/%m"
   end
+
+  def car_status
+    object.car_status&.sales_status
+  end
 end

@@ -10,6 +10,11 @@ cs:
           diesel: nafta
           petrol: benzín
           hybrid: hybridní
+      car_status:
+        sales_status:
+          new: nový
+          deposit: zálohováno
+          sold: prodáno
     models:
       bank:
         one: Banka
