@@ -1,5 +1,5 @@
-# # typed: false
-# # frozen_string_literal: true
+# typed: false
+# frozen_string_literal: true
 
-# ActiveAdmin.register Car do
-# end
+ActiveAdmin.register Car do
+end
