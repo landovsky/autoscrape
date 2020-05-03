@@ -1,12 +1,11 @@
 class CarCrawlerService
   attr_reader :raw_page, :search
 
-  def self.call(car = nil)
-    new.call(car)
+  def self.call(cars)
+    new.call(cars)
   end
 
-  def call(car)
-    cars = car.present? ? [car] : Car.all
+  def call(cars)
     cars.each do |car|
       save_raw_page(car)
     end

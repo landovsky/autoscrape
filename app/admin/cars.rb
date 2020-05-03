@@ -15,7 +15,15 @@ ActiveAdmin.register Car do
     end
   end
 
+  collection_action :crawl_and_parse, method: :get do
+    CrawlerService.call
+
+    redirect_to cars_path, notice: 'Updated'
+  end
+
   index do
+    a 'Aktualizovat', href: crawl_and_parse_cars_path, class: 'button', style: 'margin-bottom: 12px'
+
     id_column
     column :title
     column :car_status do |resource|

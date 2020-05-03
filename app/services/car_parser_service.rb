@@ -5,17 +5,17 @@ class CarParserService
     @features = {}
   end
 
-  def self.call(car = nil)
-    new.call(car)
+  def self.call(crawls)
+    new.call(crawls)
   end
 
-  def call(car)
-    crawls = car.present? ? [car.crawls.last] : Crawl.all
+  def call(crawls)
     crawls.each do |crawl|
       @crawl = crawl
       @car = crawl.car
       @search = Nokogiri::HTML @crawl.body
       parse_crawl
+      crawl.parsed!
     end
   end
 

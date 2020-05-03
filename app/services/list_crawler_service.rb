@@ -1,9 +1,8 @@
 class ListCrawlerService
-  attr_reader :raw_page, :search, :url, :page
+  attr_reader :raw_page, :search, :url
 
   def initialize(url)
     @url = url
-    @page = 1
   end
 
   def self.call(url = 'https://www.autodraft.cz/auta.html?cat=1&prevodovka=automat&showroom=PHA')
