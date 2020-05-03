@@ -1,0 +1,72 @@
+image: circleci/ruby:2.6.3-node-browsers
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - vendor/ruby
+
+services:
+    - postgres:latest
+
+variables:
+  RAILS_ENV: test
+  DATABASE_URL: postgres://runner@postgres:5432/hyposka
+  POSTGRES_DB: hyposka
+  POSTGRES_USER: runner
+  POSTGRES_PASSWORD: ""
+
+stages:
+  - test
+  - deploy
+
+test_code:
+  stage: test
+  script:
+    - bundle install -j $(nproc) --path vendor
+    - bundle exec rake db:reset
+    - bundle exec rake spec COVERAGE=true BULLET=true EAGER_LOADING=true RSPEC_DOCS_FORMAT=true
+  when: on_success
+  except:
+    variables:
+      - $ONLY_DEPLOY == "true"
+    refs:
+      - tags
+      - staging
+      - master
+
+test_api:
+  stage: test
+  script:
+    - sudo npm install -g newman
+    - bundle install -j $(nproc) --path vendor
+    - bundle exec rake db:reset seeder:base
+    - bundle exec rails s -d
+    - ["curl -X GET https://api.getpostman.com/collections/7841476-f601b924-d250-4fa6-85b1-c2759d0d5c3d -H \"X-Api-Key: $POSTMAN_API_KEY_HYPOSKA\" -H \"Cache-Control: no-cache\" -o postman-simple-example.json"]
+    - ["newman run postman-simple-example.json --env-var \"host=http://localhost:3001\""]
+
+  when: on_success
+  except:
+    variables:
+      - $ONLY_DEPLOY == "true"
+    refs:
+      - tags
+      - staging
+      - master
+
+deploy-staging:
+  stage: deploy
+  script:
+  - gem install dpl
+  - dpl --provider=heroku --app=moje-hyposka-staging --api-key=$HEROKU_API_KEY
+  when: on_success
+  only:
+  - staging
+
+deploy-master:
+  stage: deploy
+  script:
+  - gem install dpl
+  - dpl --provider=heroku --app=moje-hyposka-admin-prod --api-key=$HEROKU_API_KEY
+  when: on_success
+  only:
+  - master

@@ -1,0 +1,24 @@
+en:
+  api:
+    errors:
+      code_verification:
+        code_invalid: code is invalid
+        code_expired: code has expired, get yourself a new one
+      auth:
+        unauthorized: you must be signed-in to perform this action
+  activerecord:
+    errors:
+      messages:
+        user:
+          email:
+            already_registered: is already registered to another user
+          phone_number:
+            already_registered: is already registered to another user
+            invalid_country_code: must be in format +420
+            not_mobile_phone: phone cannob be a landline
+            invalid_format: input phone number as '608 123 123'
+    enums:
+      product_fee:
+        recurrences:
+          once: one-off
+          monthly: monthly

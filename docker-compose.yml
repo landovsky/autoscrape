@@ -1,0 +1,33 @@
+version: "2"
+
+volumes:
+  gem_store_263:
+    external: true
+
+networks:
+  hyposka:
+
+services:
+  postgres:
+    image: postgres:latest
+    env_file: .env
+    networks:
+      - hyposka
+    ports:
+      - "5432:5432"
+  web:
+    build:
+      context: .
+    command: bash
+    env_file: .env
+    tty: true
+    stdin_open: true
+    ports:
+      - "${LOCAL_PORT}:3000"
+    volumes:
+      - .:/hyposka
+      - gem_store_263:/gems
+    depends_on:
+      - postgres
+    networks:
+      - hyposka
