@@ -1,5 +1,5 @@
 class CarCrawlerService
-  attr_reader :raw_page, :search, :url, :page
+  attr_reader :raw_page, :search
 
   def self.call
     new.call

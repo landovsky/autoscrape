@@ -10,25 +10,50 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_03_124408) do
+ActiveRecord::Schema.define(version: 2020_05_03_195015) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "car_features", force: :cascade do |t|
+    t.bigint "feature_id"
+    t.bigint "car_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["car_id"], name: "index_car_features_on_car_id"
+    t.index ["feature_id"], name: "index_car_features_on_feature_id"
+  end
+
   create_table "cars", force: :cascade do |t|
     t.datetime "last_seen"
+    t.string "title"
+    t.string "vin"
     t.string "url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "transmission"
+    t.integer "power_kw"
+    t.datetime "manufactured"
+    t.integer "odometer"
+    t.integer "fuel"
   end
 
   create_table "crawls", force: :cascade do |t|
     t.bigint "car_id"
     t.text "body"
+    t.datetime "parsed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["car_id"], name: "index_crawls_on_car_id"
   end
 
+  create_table "features", force: :cascade do |t|
+    t.string "title"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_foreign_key "car_features", "cars"
+  add_foreign_key "car_features", "features"
   add_foreign_key "crawls", "cars"
 end

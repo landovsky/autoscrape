@@ -1,109 +1,15 @@
 cs:
   active_admin:
-    search_status:
-      headline: Vyhledávání
-      current_filters: Parametry
-    scopes:
-      all: všechny
-      active: aktivní
-      inactive: neaktivní
-    filters:
-      predicates:
-        from: Datum od
-        to: Datum do
-        gteq_datetime: ">="
-        lteq_datetime: "<="
-  api:
-    request_verification_code:
-      text: 'Váš aktivační kód pro web Moje Hypoška je %{code}'
-    errors:
-      order:
-        already_ordered: tuto kombinaci produktu / fixace jste si u banky již objednal/a
-      code_verification:
-        code_invalid: neplatný kód
-        code_expired: kód již expiroval, nechte si poslat další
-      auth:
-        unauthorized: bez přihlášení do aplikace to nepůjde
-      sms_service:
-        "21211": zadané číslo není validní telefonní číslo
-        "21408": na zahraniční telefonní číslo nelze zprávu zaslat
-        "21612": &cannot_send_message "na toto číslo nelze poslat textovou zprávu"
-        "21614": *cannot_send_message
-        other: neznámá chyba při odesílání textové zprávy
-  integrations:
-    "Adapter::Order::CS":
-      "201": OK
-      "401": &unauthorized "neautorizováno"
-      "409": Duplicita
-      "1000": &other_failure "jiná chyba"
-    "Adapter::Order::Email":
-      "202": OK
-      "1000": *other_failure
-    "Adapter::Order::HB":
-      "200": OK
-      "401": *unauthorized
   activerecord:
     attributes:
-      bank:
-        name_link: Název
-        name: Název
-        code: API adaptér
-        unlisted_discount: Defaultní sleva úrokové sazby
-        order_notification_email: Notifikace objednávek na
-        rpsn_document: RPSN dokument
-        updated_at: &updated_at "Datum aktualizace"
-        created_at: &created_at "Datum vytvoření"
-
-      order:
-        user: Objednatel
-        bank: Banka
-        rate: Sazba
-        maturity: Splatnost
-        fixation: Fixace
-        product: Produkt
-        variant: Varianta
-        submission_status: Stav odeslání do banky
-        loan_size: &loan_size "Výše úvěru"
-        updated_at: *updated_at
-        created_at: *created_at
-        valid_from: &valid_from "Platí od"
-        valid_to: &valid_to "Platí do"
-
-      product:
-        bank: Banka
-        submission_status: Stav odeslání do banky
-        active_product: Aktivní produkt
-        name_link: Název
-        name: Název
-        purposes: Účely
-        description: Popis
-        repayment_model: Výpočetní model
-        eletronic_submission: Elektronické podání dokumentů
-        days_to_approval: Rychlost schválení úvěru
-        validity: &validity "Platnost"
-        product_label: Label (pro odlišení)
-        updated_at: *updated_at
-        created_at: *created_at
-        valid_from: *valid_from
-        valid_to: *valid_to
-
-      user:
-        admin_user: Admin
-        email_confirmed: Email ověřen
-        phone_country_code: Mezinárodní předvolba
-        phone_number: Tel. číslo
-        phone: Tel. číslo
-        auth_method: Přihlášení přes
-        auth_methods:
-          none: Žádné
-          google-oauth2: Google
-          facebook: Facebook
-          auth0: Email + heslo
-        phone_confirmed: Číslo ověřeno
-        full_name: Celé jméno
-        postcode: PSČ
-        updated_at: *updated_at
-        created_at: *created_at
+      car:
+        transmission:
+          automatic: automatická
+          manual: manuální
+        fuel:
+          diesel: nafta
+          petrol: benzín
+          hybrid: hybridní
     models:
       bank:
         one: Banka

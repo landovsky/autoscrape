@@ -3,4 +3,4 @@
 
 TH = TranslationsHelper
 
-I18n.default_locale = :cs
+I18n.default_locale = :en

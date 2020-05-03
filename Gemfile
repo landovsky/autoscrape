@@ -7,6 +7,7 @@ ruby '2.6.3'
 
 # ActiveAdmin
 gem 'activeadmin', '~> 2.0'
+gem 'active_admin-humanized_enum'
 gem 'arctic_admin'
 
 # Model / DB
