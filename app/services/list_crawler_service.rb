@@ -40,7 +40,7 @@ class ListCrawlerService
       url = raw.css('a').attribute('href').value
       puts url
       Car.find_or_create_by(url: url) do |car|
-        car.car_status.build
+        car.car_statuses.build
       end
     end
   end
