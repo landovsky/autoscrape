@@ -1,5 +1,5 @@
 class CarParserService
-  attr_reader :crawl, :raw_page, :search, :features
+  attr_reader :car, :crawl, :raw_page, :search, :features
 
   def initialize
     @features = {}
@@ -13,15 +13,17 @@ class CarParserService
     crawls = car.present? ? [car.crawls.last] : Crawl.all
     crawls.each do |crawl|
       @crawl = crawl
+      @car = crawl.car
       @search = Nokogiri::HTML @crawl.body
       parse_crawl
     end
   end
 
   def parse_crawl
-    crawl.car.update_attributes parse_car_params
+    car.update_attributes parse_car_params
     update_car_features
     update_car_sales_status
+    set_car_price || update_car_price
   end
 
   def update_car_sales_status
@@ -29,13 +31,27 @@ class CarParserService
     return if new_status_raw.blank?
 
     new_status = car_status_text_to_enum(:sales_status, new_status_raw.to_s).to_s
-    return if crawl.car.car_status&.sales_status&.to_s == new_status
+    return if car.car_status&.sales_status&.to_s == new_status
 
-    crawl.car.car_statuses << CarStatus.new(sales_status: new_status)
+    car.car_statuses << CarStatus.new(sales_status: new_status)
+  end
+
+  def set_car_price
+    return if car.price.present?
+
+    car.car_prices << CarPrice.new(price: find_price)
+  end
+
+  def update_car_price
+    new_car_price = find_price
+    return if new_car_price.blank?
+    return if car.price == new_car_price
+
+    car.car_prices << CarPrice.new(price: new_car_price)
   end
 
   def update_car_features
-    crawl.car.features << parse_car_features
+    car.features << parse_car_features
   rescue ActiveRecord::RecordInvalid
     nil
   end

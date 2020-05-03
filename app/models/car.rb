@@ -6,7 +6,12 @@ class Car < ApplicationRecord
   has_many :car_features, dependent: :delete_all
   has_many :features, through: :car_features
   has_many :car_statuses, dependent: :delete_all
-  has_one :car_status
+  has_one :car_status, -> { order(created_at: :desc) }
+  has_many :car_prices, dependent: :delete_all
+  has_one :car_price, -> { order(created_at: :desc) }
+
+  delegate :sales_status, to: :car_status, allow_nil: true
+  delegate :price, to: :car_price, allow_nil: true
 
   validates_uniqueness_of :vin
 end

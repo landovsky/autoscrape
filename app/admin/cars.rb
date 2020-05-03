@@ -9,13 +9,19 @@ ActiveAdmin.register Car do
   filter :transmission, as: :select, collection: Car.transmissions
   filter :features_id_in, as: :select, collection: Feature.order(:title).pluck(:title, :id)
 
+  controller do
+    def scoped_collection
+      super.includes(:car_price, :car_status, :car_prices, :car_statuses)
+    end
+  end
+
   index do
     id_column
     column :title
     column :car_status do |resource|
       status_tag resource.car_status if resource.car_status
     end
-    column :vin
+    column :price
     column :odometer
     column :manufactured
     column :transmission
@@ -27,6 +33,7 @@ ActiveAdmin.register Car do
 
   show do
     panel title do
+      h3 resource.price
       attributes_table_for resource do
         row :manufactured
         row :odometer
