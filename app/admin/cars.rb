@@ -9,6 +9,11 @@ ActiveAdmin.register Car do
   filter :transmission, as: :select, collection: Car.transmissions
   filter :features_id_in, as: :select, collection: Feature.order(:title).pluck(:title, :id)
 
+  scope :available, default: true
+  scope :sold
+  scope :deposit
+  scope :all
+
   controller do
     def scoped_collection
       super.with_price.with_status.includes(:car_price, :car_status, :car_prices, :car_statuses)
@@ -26,10 +31,10 @@ ActiveAdmin.register Car do
 
     id_column
     column :title
-    column :car_status, sortable: 'sales_status' do |resource|
+    column :car_status, sortable: 'car_statuses.sales_status' do |resource|
       status_tag resource.car_status if resource.car_status
     end
-    column :price, sortable: 'price'
+    column :price, sortable: 'car_prices.price'
     column :odometer
     column :manufactured
     column :transmission
