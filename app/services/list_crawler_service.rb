@@ -12,9 +12,11 @@ class ListCrawlerService
   def call
     pages = determine_page_count
     (1..pages).each do |page|
+      @found_new_car = false
       at_page(page)
       sleep 0.7
       parse_cars
+      break unless @found_new_car
     end
   end
 
@@ -40,6 +42,7 @@ class ListCrawlerService
       url = raw.css('a').attribute('href').value
       puts url
       Car.find_or_create_by(url: url) do |car|
+        @found_new_car = true
         car.car_statuses.build
       end
     end
