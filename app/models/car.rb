@@ -14,6 +14,7 @@ class Car < ApplicationRecord
   delegate :price, to: :car_price, allow_nil: true
 
   scope :without_crawl, -> { left_joins(:crawls).where(crawls: { car_id: nil })}
+  scope :available, -> { joins(:car_statuses).merge(CarStatus.unique.available) }
 
-  validates_uniqueness_of :vin
+  # validates_uniqueness_of :vin
 end

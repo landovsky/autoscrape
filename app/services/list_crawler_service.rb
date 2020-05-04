@@ -13,6 +13,7 @@ class ListCrawlerService
     pages = determine_page_count
     (1..pages).each do |page|
       at_page(page)
+      sleep 0.7
       parse_cars
     end
   end
@@ -29,7 +30,7 @@ class ListCrawlerService
     search = Nokogiri::HTML raw
     paging = search.css '.gui_list_paging_links_base'
     last_page = paging.map { |p| p.children.map(&:text).first }.reject(&:blank?).last
-    last_page.to_i
+    last_page.to_i == 0 ? 1 : last_page.to_i
   end
 
   def parse_cars
