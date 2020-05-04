@@ -11,7 +11,7 @@ ActiveAdmin.register Car do
 
   controller do
     def scoped_collection
-      super.with_price.includes(:car_price, :car_status, :car_prices, :car_statuses)
+      super.with_price.with_status.includes(:car_price, :car_status, :car_prices, :car_statuses)
     end
   end
 
@@ -26,7 +26,7 @@ ActiveAdmin.register Car do
 
     id_column
     column :title
-    column :car_status do |resource|
+    column :car_status, sortable: 'sales_status' do |resource|
       status_tag resource.car_status if resource.car_status
     end
     column :price, sortable: 'price'
@@ -40,23 +40,32 @@ ActiveAdmin.register Car do
   end
 
   show do
-    panel title do
-      h3 resource.price
-      attributes_table_for resource do
-        row :manufactured
-        row :odometer
-        row :transmission
-        row :power_kw
-        row :fuel
-        row :vin
-        row :created_at
-        row :updated_at
+    div style: 'width: 550px' do
+      panel title do
+        h3 resource.price
+        attributes_table_for resource do
+          row :manufactured
+          row :odometer
+          row :transmission
+          row :power_kw
+          row :fuel
+          row :vin
+          row :created_at
+          row :updated_at
+        end
       end
-    end
 
-    panel 'Vlastnosti' do
-      table_for resource.features do
-        column :title
+      panel 'Prodej' do
+        table_for resource.car_statuses do
+          column :sales_status
+          column :created_at
+        end
+      end
+
+      panel 'Vlastnosti' do
+        table_for resource.features do
+          column :title
+        end
       end
     end
   end
