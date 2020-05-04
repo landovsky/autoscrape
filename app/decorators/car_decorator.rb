@@ -4,6 +4,10 @@ class CarDecorator < ApplicationDecorator
   delegate_all
 
   def title
+    object.title
+  end
+
+  def title_link
     h.link_to object.title, object.url
   end
 

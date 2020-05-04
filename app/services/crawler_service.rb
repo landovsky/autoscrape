@@ -5,6 +5,6 @@ class CrawlerService
     ListCrawlerService.call 'https://www.autodraft.cz/auta.html?cat=1&prevodovka=automat&showroom=PHA'
     ListCrawlerService.call 'https://www.autodraft.cz/auta.html?cat=2&prevodovka=automat&showroom=PHA'
     CarCrawlerService.call Car.available.crawled_hours_ago(8)
-    CarParserService.call Crawl.unparsed
+    CarParserService.call *Crawl.unparsed
   end
 end

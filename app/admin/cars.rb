@@ -8,6 +8,7 @@ ActiveAdmin.register Car do
   filter :fuel, as: :select, collection: Car.fuels
   filter :transmission, as: :select, collection: Car.transmissions
   filter :features_id_in, as: :select, collection: Feature.order(:title).pluck(:title, :id)
+  filter :url_cont
 
   scope :available, default: true
   scope :sold
@@ -30,7 +31,7 @@ ActiveAdmin.register Car do
     a 'Aktualizovat', href: crawl_and_parse_cars_path, class: 'button', style: 'margin-bottom: 12px'
 
     id_column
-    column :title
+    column :title, &:title_link
     column :car_status, sortable: 'car_statuses.sales_status' do |resource|
       status_tag resource.car_status if resource.car_status
     end
@@ -46,7 +47,7 @@ ActiveAdmin.register Car do
 
   show do
     div style: 'width: 550px' do
-      panel title do
+      panel resource.title_link do
         h3 resource.price
         attributes_table_for resource do
           row :manufactured
@@ -55,6 +56,7 @@ ActiveAdmin.register Car do
           row :power_kw
           row :fuel
           row :vin
+          row :color, style: "background: ##{resource.color_hex}"
           row :created_at
           row :updated_at
         end

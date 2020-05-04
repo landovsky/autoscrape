@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_03_210621) do
+ActiveRecord::Schema.define(version: 2020_05_04_192919) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,6 +52,8 @@ ActiveRecord::Schema.define(version: 2020_05_03_210621) do
     t.datetime "manufactured"
     t.integer "odometer"
     t.integer "fuel"
+    t.string "color"
+    t.string "color_hex"
   end
 
   create_table "crawls", force: :cascade do |t|

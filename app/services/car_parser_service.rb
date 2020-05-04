@@ -1,13 +1,19 @@
 class CarParserService
-  attr_reader :car, :crawl, :raw_page, :search, :features
+  attr_reader :car, :crawl, :raw_page, :search, :features, :force_parsing
 
-  def initialize
+  def initialize(force_parsing: false)
     @features = {}
+    @force_parsing = force_parsing
   end
 
-  def self.call(crawls)
+  def self.call(*crawls)
     new.call(crawls)
   end
+
+  def self.call!(*crawls)
+    new(force_parsing: true).call(crawls)
+  end
+
 
   def call(crawls)
     crawls.each do |crawl|
@@ -20,10 +26,19 @@ class CarParserService
   end
 
   def parse_crawl
+    if car.title.blank?
+      parse_base_care_info
+    else
+      parse_base_care_info if force_parsing
+      update_car_price
+      update_car_sales_status
+    end
+  end
+
+  def parse_base_care_info
     car.update_attributes parse_car_params
     update_car_features
-    update_car_sales_status
-    set_car_price || update_car_price
+    set_car_price
   end
 
   def update_car_sales_status
@@ -65,6 +80,8 @@ class CarParserService
       transmission: car_text_to_enum(:transmission, find_car_param('Převodovka').downcase),
       fuel: car_text_to_enum(:fuel, find_car_param('Palivo').downcase),
       vin: find_car_param('Vin') { |param| param.split(' ').first },
+      color: find_car_param('Barva'),
+      color_hex: find_color_code
     }
   end
 
@@ -77,6 +94,10 @@ class CarParserService
 
   def find_price
     search.css('h2.xs-center').first.text.strip.split[0..-2].join('').to_i
+  end
+
+  def find_color_code
+    car_param_block('Barva').children[-2].children.map { |i| i.attribute('style')&.value }.compact.first.split('#').last.gsub(';', '')
   end
 
   def car_text_to_enum(enum, text)
@@ -96,9 +117,15 @@ class CarParserService
   end
 
   def find_car_param(name)
+    param = car_param_block(name) do |block|
+      block.children.map(&:text).map(&:strip).reject(&:blank?) # clean block
+    end
+    block_given? ? yield(param.last) : param.last
+  end
+
+  def car_param_block(name)
     car_params = search.css('div.row.paramsRow')
-    param_to_find = car_params.find { |i| i.children.map(&:text).map(&:strip).reject(&:blank?).first.downcase == name.downcase } # find param block
-                              .children.map(&:text).map(&:strip).reject(&:blank?) # clean block
-    block_given? ? yield(param_to_find.last) : param_to_find.last
+    param_block = car_params.find { |i| i.children.map(&:text).map(&:strip).reject(&:blank?).first.downcase == name.downcase } # find param block
+    block_given? ? yield(param_block) : param_block
   end
 end
