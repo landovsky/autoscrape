@@ -15,6 +15,7 @@ class Car < ApplicationRecord
 
   scope :without_crawl, -> { left_joins(:crawls).where(crawls: { car_id: nil })}
   scope :available, -> { joins(:car_statuses).merge(CarStatus.unique.available) }
+  scope :crawled_hours_ago, -> (hours) { where('last_seen IS NULL or last_seen < ?', hours.hours.ago) }
 
   # validates_uniqueness_of :vin
 end
