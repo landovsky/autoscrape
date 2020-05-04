@@ -11,7 +11,7 @@ ActiveAdmin.register Car do
 
   controller do
     def scoped_collection
-      super.includes(:car_price, :car_status, :car_prices, :car_statuses)
+      super.with_price.includes(:car_price, :car_status, :car_prices, :car_statuses)
     end
   end
 
@@ -29,7 +29,7 @@ ActiveAdmin.register Car do
     column :car_status do |resource|
       status_tag resource.car_status if resource.car_status
     end
-    column :price
+    column :price, sortable: 'price'
     column :odometer
     column :manufactured
     column :transmission

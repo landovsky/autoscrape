@@ -13,6 +13,7 @@ class Car < ApplicationRecord
   delegate :sales_status, to: :car_status, allow_nil: true
   delegate :price, to: :car_price, allow_nil: true
 
+  scope :with_price, -> { select('cars.*, car_prices.price price').left_joins(:car_prices).merge(CarPrice.unique) }
   scope :without_crawl, -> { left_joins(:crawls).where(crawls: { car_id: nil })}
   scope :available, -> { joins(:car_statuses).merge(CarStatus.unique.available) }
   scope :crawled_hours_ago, -> (hours) { where('last_seen IS NULL or last_seen < ?', hours.hours.ago) }
