@@ -13,6 +13,7 @@ ActiveAdmin.register Car do
   scope :available, default: true
   scope :sold
   scope :deposit
+  scope :price_changed
   scope :all
 
   controller do

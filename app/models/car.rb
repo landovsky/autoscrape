@@ -13,12 +13,13 @@ class Car < ApplicationRecord
   delegate :sales_status, to: :car_status, allow_nil: true
   delegate :price, to: :car_price, allow_nil: true
 
-  scope :with_price, -> { select('cars.*, car_prices.price').left_joins(:car_prices).merge(CarPrice.unique) }
-  scope :with_status, -> { select('cars.*, car_statuses.sales_status').left_joins(:car_statuses).merge(CarStatus.unique) }
+  scope :with_price, -> { select('cars.*, car_prices.price').left_joins(:car_prices).merge(CarPrice.last_change) }
+  scope :price_changed, -> { unscoped.left_joins(:car_prices).merge(CarPrice.changed) }
+  scope :with_status, -> { select('cars.*, car_statuses.sales_status').left_joins(:car_statuses).merge(CarStatus.last_change) }
   scope :without_crawl, -> { left_joins(:crawls).where(crawls: { car_id: nil })}
-  scope :available, -> { joins(:car_statuses).merge(CarStatus.unique.available) }
-  scope :sold, -> { joins(:car_statuses).merge(CarStatus.unique.sold) }
-  scope :deposit, -> { joins(:car_statuses).merge(CarStatus.unique.deposit) }
+  scope :available, -> { joins(:car_statuses).merge(CarStatus.last_change.available) }
+  scope :sold, -> { joins(:car_statuses).merge(CarStatus.last_change.sold) }
+  scope :deposit, -> { joins(:car_statuses).merge(CarStatus.last_change.deposit) }
   scope :crawled_hours_ago, -> (hours) { where('last_seen IS NULL or last_seen < ?', hours.hours.ago) }
 
   # validates_uniqueness_of :vin
