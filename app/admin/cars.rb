@@ -28,6 +28,12 @@ ActiveAdmin.register Car do
     redirect_to cars_path, notice: 'Updated'
   end
 
+  member_action :crawl_and_parse, method: :get do
+    CrawlerService.call! Car.find(params[:id])
+
+    redirect_to cars_path, notice: 'Updated'
+  end
+
   index do
     a 'Aktualizovat', href: crawl_and_parse_cars_path, class: 'button', style: 'margin-bottom: 12px'
 
@@ -50,6 +56,7 @@ ActiveAdmin.register Car do
     div style: 'width: 550px' do
       panel resource.title_link do
         h3 resource.price
+        a 'Aktualizovat', href: crawl_and_parse_car_path(resource), class: 'button', style: 'margin-bottom: 12px'
         attributes_table_for resource do
           row :manufactured
           row :odometer

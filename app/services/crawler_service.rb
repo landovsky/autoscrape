@@ -7,4 +7,9 @@ class CrawlerService
     CarCrawlerService.call Car.available.crawled_hours_ago(8)
     CarParserService.call *Crawl.unparsed
   end
+
+  def self.call!(*cars)
+    CarCrawlerService.call cars
+    CarParserService.call *Crawl.unparsed
+  end
 end
