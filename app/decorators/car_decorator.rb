@@ -8,7 +8,7 @@ class CarDecorator < ApplicationDecorator
   end
 
   def title_link
-    h.link_to object.title, object.url
+    h.link_to object.title, object.url, target: '_blank'
   end
 
   def url
