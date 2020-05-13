@@ -22,20 +22,20 @@ ActiveAdmin.register Car do
     end
   end
 
-  collection_action :crawl_and_parse, method: :get do
+  collection_action :crawl_all, method: :get do
     CrawlerService.call
 
     redirect_to cars_path, notice: 'Updated'
   end
 
-  member_action :crawl_and_parse, method: :get do
+  member_action :crawl_some, method: :get do
     CrawlerService.call! Car.find(params[:id])
 
     redirect_to cars_path, notice: 'Updated'
   end
 
   index do
-    a 'Aktualizovat', href: crawl_and_parse_cars_path, class: 'button', style: 'margin-bottom: 12px'
+    a 'Aktualizovat', href: crawl_all_cars_path, class: 'button', style: 'margin-bottom: 12px'
 
     id_column
     column :title, &:title_link
@@ -43,11 +43,11 @@ ActiveAdmin.register Car do
       status_tag resource.car_status if resource.car_status
     end
     column :price, sortable: 'car_prices.price'
+    column :discount
     column :odometer
     column :manufactured
     column :transmission
     column :power_kw
-    column :fuel
     column :created_at
     column :updated_at
   end
@@ -56,7 +56,7 @@ ActiveAdmin.register Car do
     div style: 'width: 550px' do
       panel resource.title_link do
         h3 resource.price
-        a 'Aktualizovat', href: crawl_and_parse_car_path(resource), class: 'button', style: 'margin-bottom: 12px'
+        a 'Aktualizovat', href: crawl_some_car_path(resource), class: 'button', style: 'margin-bottom: 12px'
         attributes_table_for resource do
           row :manufactured
           row :odometer

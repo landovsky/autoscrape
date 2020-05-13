@@ -16,9 +16,13 @@ class CarDecorator < ApplicationDecorator
   end
 
   def price
-    price = h.currency object.price, 'Kč'
-    return price if car_prices.count <= 1
-    h.content_tag :strong, price
+    h.currency object.price, 'Kč'
+  end
+
+  def discount
+    return if car_prices.count <= 1
+
+    h.currency object.car_prices.last.price - object.car_prices.first.price, 'Kč'
   end
 
   def odometer
@@ -30,7 +34,6 @@ class CarDecorator < ApplicationDecorator
   end
 
   def car_status
-
     return if object.sales_status == 'on_sale'
 
     object.sales_status
