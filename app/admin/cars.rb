@@ -31,7 +31,7 @@ ActiveAdmin.register Car do
   member_action :crawl_some, method: :get do
     CrawlerService.call! Car.find(params[:id])
 
-    redirect_to cars_path, notice: 'Updated'
+    redirect_to car_path(params[:id]), notice: 'Updated'
   end
 
   index do
@@ -43,6 +43,7 @@ ActiveAdmin.register Car do
       status_tag resource.car_status if resource.car_status
     end
     column :price, sortable: 'car_prices.price'
+    column :rating, sortable: 'cars.rating'
     column :discount
     column :odometer
     column :manufactured

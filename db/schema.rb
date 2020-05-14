@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_04_192919) do
+ActiveRecord::Schema.define(version: 2020_05_13_112925) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,6 +54,7 @@ ActiveRecord::Schema.define(version: 2020_05_04_192919) do
     t.integer "fuel"
     t.string "color"
     t.string "color_hex"
+    t.integer "rating"
   end
 
   create_table "crawls", force: :cascade do |t|

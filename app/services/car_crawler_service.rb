@@ -8,7 +8,7 @@ class CarCrawlerService
   def call(cars)
     cars.each do |car|
       save_raw_page(car)
-      sleep 0.7
+      sleep CrawlerService::SLEEP
     end
   end
 

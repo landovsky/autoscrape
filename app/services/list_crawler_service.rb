@@ -14,7 +14,7 @@ class ListCrawlerService
     (1..pages).each do |page|
       @found_new_car = false
       at_page(page)
-      sleep 0.7
+      sleep CrawlerService::SLEEP
       parse_cars
       break unless @found_new_car
     end
