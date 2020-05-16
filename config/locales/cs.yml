@@ -10,6 +10,8 @@ cs:
           diesel: nafta
           petrol: benzín
           hybrid: hybridní
+          cng_petrol: CNG + benzín
+          lpg_petrol: LPG + benzín
       car_status:
         sales_status:
           new: nový

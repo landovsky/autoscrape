@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_13_112925) do
+ActiveRecord::Schema.define(version: 2020_05_16_074425) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(version: 2020_05_13_112925) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["car_id"], name: "index_car_prices_on_car_id"
+    t.index ["price"], name: "index_car_prices_on_price"
   end
 
   create_table "car_statuses", force: :cascade do |t|
@@ -38,6 +39,7 @@ ActiveRecord::Schema.define(version: 2020_05_13_112925) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["car_id"], name: "index_car_statuses_on_car_id"
+    t.index ["sales_status"], name: "index_car_statuses_on_sales_status"
   end
 
   create_table "cars", force: :cascade do |t|
@@ -55,6 +57,8 @@ ActiveRecord::Schema.define(version: 2020_05_13_112925) do
     t.string "color"
     t.string "color_hex"
     t.integer "rating"
+    t.integer "source"
+    t.string "location"
   end
 
   create_table "crawls", force: :cascade do |t|
@@ -63,7 +67,10 @@ ActiveRecord::Schema.define(version: 2020_05_13_112925) do
     t.datetime "parsed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "format", default: 1
     t.index ["car_id"], name: "index_crawls_on_car_id"
+    t.index ["format"], name: "index_crawls_on_format"
+    t.index ["parsed_at"], name: "index_crawls_on_parsed_at"
   end
 
   create_table "features", force: :cascade do |t|

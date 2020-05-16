@@ -14,7 +14,7 @@ class ListCrawlerService
     (1..pages).each do |page|
       @found_new_car = false
       at_page(page)
-      sleep CrawlerService::SLEEP
+      sleep CrawlerService::SLEEP.call
       parse_cars
       break unless @found_new_car
     end
@@ -43,6 +43,7 @@ class ListCrawlerService
       puts url
       Car.find_or_create_by(url: url) do |car|
         @found_new_car = true
+        car.source = :autodraft
         car.car_statuses.build
       end
     end

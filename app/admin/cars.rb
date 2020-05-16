@@ -4,6 +4,7 @@
 ActiveAdmin.register Car do
   decorate_with CarDecorator
 
+  filter :source, as: :select, collection: Car.sources
   filter :title_cont
   filter :fuel, as: :select, collection: Car.fuels
   filter :transmission, as: :select, collection: Car.transmissions
@@ -23,13 +24,14 @@ ActiveAdmin.register Car do
   end
 
   collection_action :crawl_all, method: :get do
-    CrawlerService.call
+    CrawlerService.autodraft
+    CrawlerService.sauto
 
     redirect_to cars_path, notice: 'Updated'
   end
 
   member_action :crawl_some, method: :get do
-    CrawlerService.call! Car.find(params[:id])
+    CrawlerService.call Car.find(params[:id])
 
     redirect_to car_path(params[:id]), notice: 'Updated'
   end
@@ -55,6 +57,7 @@ ActiveAdmin.register Car do
 
   show do
     div style: 'width: 550px' do
+      h4 resource.source
       panel resource.title_link do
         h3 resource.price
         a 'Aktualizovat', href: crawl_some_car_path(resource), class: 'button', style: 'margin-bottom: 12px'

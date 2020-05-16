@@ -17,6 +17,7 @@ class CarParserService
 
   def call(crawls)
     crawls.each do |crawl|
+      puts "Parsing crawl id #{crawl.id}"
       @crawl = crawl
       @car = crawl.car
       @search = Nokogiri::HTML @crawl.body
@@ -30,7 +31,7 @@ class CarParserService
       parse_base_care_info
     else
       parse_base_care_info if force_parsing
-      update_car_price
+      car.update_price(find_price)
       update_car_sales_status
     end
   end
@@ -55,14 +56,6 @@ class CarParserService
     return if car.price.present?
 
     car.car_prices << CarPrice.new(price: find_price)
-  end
-
-  def update_car_price
-    new_car_price = find_price
-    return if new_car_price.blank?
-    return if car.price == new_car_price
-
-    car.car_prices << CarPrice.new(price: new_car_price)
   end
 
   def update_car_features
@@ -94,6 +87,9 @@ class CarParserService
 
   def find_price
     search.css('h2.xs-center').first.text.strip.split[0..-2].join('').to_i
+  rescue => e
+    binding.pry
+    raise e
   end
 
   def find_color_code
