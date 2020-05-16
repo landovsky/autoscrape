@@ -22,7 +22,7 @@ class ListCrawlerService
 
   def at_page(page)
     paged_url = url + "&gpage=#{page}"
-    puts "Parsing #{paged_url}"
+    log "Parsing #{paged_url}"
     @raw_page = open_page paged_url
     @search   = Nokogiri::HTML raw_page
   end
@@ -37,10 +37,9 @@ class ListCrawlerService
 
   def parse_cars
     cars = search.css('.car-thumb')
-    puts "Found #{cars.count} cars"
+    log "Found #{cars.count} cars"
     cars.each do |raw|
       url = raw.css('a').attribute('href').value
-      puts url
       Car.find_or_create_by(url: url) do |car|
         @found_new_car = true
         car.source = :autodraft
@@ -53,5 +52,9 @@ class ListCrawlerService
     uri = URI.parse url
     response = Net::HTTP.get_response uri
     response.body
+  end
+
+  def log(msg, level = :debug)
+    Rails.logger.send level, "Autodraft::ListCrawlerService: #{msg}"
   end
 end

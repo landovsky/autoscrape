@@ -21,31 +21,35 @@ module Sauto
     attr_reader :raw_page, :search, :url
 
     def initialize(url)
-      @url        = url
-      @page_count = 0
+      @url                 = url
+      @pages_with_new_cars = []
+      @current_page        = nil
+      @processed_pages     = 0
     end
 
     def self.call(url = CrawlerService::SAUTO_VW)
       new(url).call
     rescue => e
-      puts e
-      puts e.backtrace[0..10]
+      log e
+      log e.backtrace[0..10]
     end
 
     def call
       pages = determine_page_count
+
       (1..pages).each do |page|
-        @found_new_car = false
+        @current_page = page
         go_to_page(page)
         parse_page_cars
+        break unless found_car_recently?
+        @processed_pages += 1
         sleep CrawlerService::SLEEP.call
-        # break unless @found_new_car
       end
     end
 
     def go_to_page(page)
       paged_url = url + "&page=#{page}"
-      puts "Parsing #{paged_url}"
+      log "Parsing #{paged_url}"
       @raw_page = open_page paged_url
       File.open('tmp/raw_page-sauto.json', 'w') { |f| f.write(JSON.dump @raw_page)}
     end
@@ -57,23 +61,29 @@ module Sauto
 
     def parse_page_cars
       cars = raw_page['advert']
-      puts "Found #{cars.count} cars"
+      log "Found #{cars.count} cars"
       cars.each do |car_data|
         next if car_data['premise_name'] == 'AutoDraft'
 
         url = car_url(car_data)
         car = Car.find_by(url: url)
         if car.present?
-          puts "UPDATING EXISTING CAR"
           car.update_price car_data['advert_price_total']
         else
-          puts "FOUND NEW CAR"
-          @found_new_car = true
+          @pages_with_new_cars << @current_page
           new_car = create_car(car_data, url)
           new_car.crawls << Crawl.new(body: car_data.to_json, format: :json)
 
-          CarCrawlerService.call(*new_car)
+          CarCrawlerService.call *new_car
         end
+      end
+    end
+
+    def found_car_recently?
+      if @pages_with_new_cars.present?
+        @current_page - @pages_with_new_cars.last < 3
+      elsif
+        @processed_pages < 3
       end
     end
 
@@ -95,6 +105,10 @@ module Sauto
       uri = URI.parse url
       response = Net::HTTP.get_response uri
       JSON.parse response.body
+    end
+
+    def log(msg, level = :debug)
+      Rails.logger.send level, "Sauto::ListCrawlerService: #{msg}"
     end
   end
 end

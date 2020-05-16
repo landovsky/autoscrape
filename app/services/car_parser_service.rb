@@ -17,7 +17,7 @@ class CarParserService
 
   def call(crawls)
     crawls.each do |crawl|
-      puts "Parsing crawl id #{crawl.id}"
+      log "Parsing crawl id #{crawl.id}"
       @crawl = crawl
       @car = crawl.car
       @search = Nokogiri::HTML @crawl.body
@@ -123,5 +123,9 @@ class CarParserService
     car_params = search.css('div.row.paramsRow')
     param_block = car_params.find { |i| i.children.map(&:text).map(&:strip).reject(&:blank?).first.downcase == name.downcase } # find param block
     block_given? ? yield(param_block) : param_block
+  end
+
+  def log(msg, level = :debug)
+    Rails.logger.send level, "Autodraft::ListCrawlerService: #{msg}"
   end
 end
