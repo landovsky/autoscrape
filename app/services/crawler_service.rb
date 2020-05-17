@@ -8,8 +8,10 @@ class CrawlerService
   def self.autodraft
     ListCrawlerService.call 'https://www.autodraft.cz/auta.html?cat=1'
     ListCrawlerService.call 'https://www.autodraft.cz/auta.html?cat=2'
-    CarCrawlerService.call Car.autodraft.available.crawled_hours_ago(6)
+    CarCrawlerService.call *Car.autodraft.available.crawled_hours_ago(6)
     CarParserService.call *Crawl.html.unparsed.joins(:car).merge(Car.autodraft)
+
+    Car.update_rating
   end
 
   def self.sauto
@@ -18,7 +20,7 @@ class CrawlerService
   end
 
   def self.call(car)
-    CarCrawlerService.call car
+    CarCrawlerService.call *car
     if car.autodraft?
       CarParserService.call *Crawl.html.unparsed.where(car: car).last
     else

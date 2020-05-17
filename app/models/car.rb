@@ -31,6 +31,10 @@ class Car < ApplicationRecord
     (Time.zone.now.year * 12 + Time.zone.now.month) - (manufactured.year * 12 + manufactured.month)
   end
 
+  def self.update_rating
+    Car.where.not(manufactured: nil).each(&:update_rating)
+  end
+
   def update_rating
     return unless manufactured.present?
     update rating: (odometer / 1000 + age_months)
