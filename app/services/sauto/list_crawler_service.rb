@@ -41,7 +41,7 @@ module Sauto
         @current_page = page
         go_to_page(page)
         parse_page_cars
-        break unless found_car_recently?
+        # break unless found_car_recently?
         @processed_pages += 1
         sleep CrawlerService::SLEEP.call
       end
@@ -88,7 +88,7 @@ module Sauto
     end
 
     def create_car(car_data, url)
-      Car.create do |new_car|
+      Car.create! do |new_car|
         new_car.car_statuses << CarStatus.new(sales_status: :on_sale, created_at: Date.parse(car_data['advert_since']))
         new_car.car_prices << CarPrice.new(price: car_data['advert_price_total'])
 

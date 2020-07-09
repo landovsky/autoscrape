@@ -25,7 +25,7 @@ class Car < ApplicationRecord
   scope :deposit, -> { joins(:car_statuses).merge(CarStatus.last_change.deposit) }
   scope :crawled_hours_ago, -> (hours) { where('last_seen IS NULL or last_seen < ?', hours.hours.ago) }
 
-  # validates_uniqueness_of :vin
+  validates_presence_of :url
 
   def age_months
     (Time.zone.now.year * 12 + Time.zone.now.month) - (manufactured.year * 12 + manufactured.month)

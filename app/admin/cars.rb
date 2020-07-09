@@ -10,6 +10,7 @@ ActiveAdmin.register Car do
   filter :transmission, as: :select, collection: Car.transmissions
   filter :features_id_in, as: :select, collection: Feature.order(:title).pluck(:title, :id)
   filter :url_cont
+  filter :power_kw
 
   scope :available, default: true
   scope :sold
@@ -25,7 +26,7 @@ ActiveAdmin.register Car do
 
   collection_action :crawl_all, method: :get do
     CrawlerService.autodraft
-    CrawlerService.sauto
+    # CrawlerService.sauto
 
     redirect_to cars_path, notice: 'Updated'
   end
@@ -50,7 +51,9 @@ ActiveAdmin.register Car do
     column :odometer
     column :manufactured
     column :transmission
-    column :power_kw
+    column :features do |resource|
+      resource.features.valuable.map(&:title).join(' | ')
+    end
     column :created_at
     column :updated_at
   end
@@ -81,8 +84,16 @@ ActiveAdmin.register Car do
         end
       end
 
+      panel 'Cena' do
+        table_for resource.car_prices.decorate do
+          column :price
+          column :change
+          column :created_at
+        end
+      end
+
       panel 'Vlastnosti' do
-        table_for resource.features do
+        table_for resource.features.valuable do
           column :title
         end
       end

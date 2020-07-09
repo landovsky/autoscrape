@@ -13,4 +13,9 @@ class CarPrice < ApplicationRecord
   def update_car_rating
     car.update_rating
   end
+
+  def previous_price
+    prices = CarPrice.where('car_id = ? AND id < ?', car_id, id).order(created_at: :desc).limit(1).first
+    prices.presence
+  end
 end
