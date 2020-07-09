@@ -1,6 +1,6 @@
 class CrawlerService
   USER_AGENT = {'User-Agent' => 'Tomas Landovsky, +420722643643' }
-  SLEEP = proc { rand(290..4000) / 1000.to_f }
+  SLEEP = proc { rand(290..2400) / 1000.to_f }
 
   SAUTO_VW = 'https://www.sauto.cz/hledani?ajax=2&sort=2&yearMin=2010&condition=4&condition=2&category=1&manufacturer=103&model=762&manufacturer=103&model=1615&manufacturer=103&model=765&manufacturer=103&model=771&nocache=658&page=1'
 
