@@ -1,6 +1,4 @@
 class CarCrawlerService
-  attr_reader :raw_page, :search
-
   def self.call(*cars)
     new.call(cars)
   end
@@ -13,18 +11,15 @@ class CarCrawlerService
   end
 
   def save_raw_page(car)
-    at_page(car.url)
+    raw_page = open_page car.url
     car.crawls << Crawl.new(body: raw_page, format: :html)
   end
 
-  def at_page(url)
-    @raw_page = open_page url
-    @search   = Nokogiri::HTML raw_page
-  end
-
-  def open_page(url)
-    uri = URI.parse url
+  def open_page(url, attempt = 0)
+    uri      = URI.parse url
     response = Net::HTTP.get_response uri
-    response.body
+
+    attempt += 1
+    response['location'].present? && attempt < 4 ? open_page(response['location'], attempt) : response.body
   end
 end
