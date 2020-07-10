@@ -13,9 +13,10 @@ ActiveAdmin.register Car do
   filter :power_kw
 
   scope :available, default: true
+  scope :price_changed do |scope|
+    scope.price_changed.available
+  end
   scope :sold
-  scope :deposit
-  scope :price_changed
   scope :all
 
   controller do

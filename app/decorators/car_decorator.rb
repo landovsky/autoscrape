@@ -34,8 +34,8 @@ class CarDecorator < ApplicationDecorator
   end
 
   def car_status
-    return if object.sales_status == 'on_sale'
+    return if object.car_statuses.last.sales_status == 'on_sale'
 
-    object.sales_status
+    object.car_statuses.last.sales_status
   end
 end
