@@ -48,3 +48,5 @@ docker-sync.yml
 
 # Ignore RubyMine files
 .idea/
+
+dump.tar
