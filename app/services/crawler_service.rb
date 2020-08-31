@@ -3,6 +3,7 @@ class CrawlerService
   SLEEP = proc { rand(290..2400) / 1000.to_f }
 
   SAUTO_VW = 'https://www.sauto.cz/hledani?ajax=2&sort=2&yearMin=2010&condition=4&condition=2&category=1&manufacturer=103&model=762&manufacturer=103&model=1615&manufacturer=103&model=765&manufacturer=103&model=771&nocache=658&page=1'
+  BUSINESS_LEASE = 'https://www.autapooperaku.cz/vozy-na-prodej?znacka=5,7&model=9,26,44#itemCount=64'
 
 
   def self.autodraft
@@ -12,6 +13,12 @@ class CrawlerService
     CarParserService.call *Crawl.html.unparsed.joins(:car).merge(Car.autodraft)
 
     Car.update_rating
+  end
+
+  def self.business_lease
+    BusinessLease::Lister.call
+    CarCrawlerService.call *Car.business_lease.available.crawled_hours_ago(6)
+    BusinessLease::Parser::HTML.call *Crawl.html.unparsed.joins(:car).merge(Car.business_lease)
   end
 
   def self.sauto

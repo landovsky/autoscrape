@@ -1,7 +1,7 @@
 class Car < ApplicationRecord
   enum transmission: { unknown: 0, automatic: 1, manual: 2 }
   enum fuel: { other: 0, diesel: 1, petrol: 2, hybrid: 3, cng_petrol: 4, lpg_petrol: 5 }
-  enum source: { autodraft: 1, sauto: 2 }
+  enum source: { autodraft: 1, sauto: 2, business_lease: 3 }
 
   has_many :crawls, dependent: :delete_all
   has_many :car_features, dependent: :delete_all
