@@ -59,7 +59,7 @@ class CarParserService
   end
 
   def update_car_features
-    car.features << parse_car_features
+    car.features << parse_car_and_create_features
   rescue ActiveRecord::RecordInvalid
     nil
   end
@@ -78,10 +78,12 @@ class CarParserService
     }
   end
 
-  def parse_car_features
+  def parse_car_and_create_features
     crawl_features = search.css('ul.glypList').children.map(&:text).map(&:strip).reject(&:blank?)
     crawl_features.map do |feature|
-      features[feature] = Feature.find_or_create_by(title: feature)
+      features[feature] = Feature.find_or_create_by(title: feature.downcase) do |feat|
+        feat.company = :autodraft
+      end
     end
   end
 

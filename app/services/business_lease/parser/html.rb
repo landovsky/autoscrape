@@ -72,7 +72,7 @@ module BusinessLease
       end
 
       def update_car_features
-        car.features << parse_car_features
+        car.features << parse_and_create_car_features
       rescue ActiveRecord::RecordInvalid
         nil
       end
@@ -91,13 +91,13 @@ module BusinessLease
         }
       end
 
-      def parse_car_features
+      def parse_and_create_car_features
         crawl_features = search.css('div.moreParam')
                                .first.children[1].children
                                .map(&:text).reject(&:blank?).map { |i| i.split ',' }
                                .flatten
         crawl_features.map do |feature|
-          features[feature] = Feature.find_or_create_by(title: feature) do |feat|
+          features[feature] = Feature.find_or_create_by(title: feature.downcase) do |feat|
             feat.company = :business_lease
           end
         end
