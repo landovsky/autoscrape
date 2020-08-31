@@ -1,0 +1,1 @@
+pg_dump --no-owner -h localhost -U postgres --clean --format=tar --file=dump.tar autoscrape_dev
