@@ -21,7 +21,7 @@ ActiveAdmin.register Car do
 
   controller do
     def scoped_collection
-      super.with_price.with_status.includes(:car_price, :car_status, :car_prices, :car_statuses)
+      super.with_price.with_status.includes(:car_price, :car_status, :car_prices, :car_statuses, :unified_features)
     end
   end
 
@@ -43,6 +43,7 @@ ActiveAdmin.register Car do
 
     id_column
     column :title, &:title_link
+    column :src, &:source_code
     column :car_status, sortable: 'car_statuses.sales_status' do |resource|
       status_tag resource.car_status if resource.car_status
     end
@@ -53,7 +54,7 @@ ActiveAdmin.register Car do
     column :manufactured
     column :transmission
     column :features do |resource|
-      resource.features.valuable.map(&:title).join(' | ')
+      resource.unified_features.map(&:title).join(' | ')
     end
     column :created_at
     column :updated_at
@@ -93,8 +94,14 @@ ActiveAdmin.register Car do
         end
       end
 
-      panel 'Vlastnosti' do
-        table_for resource.features.valuable do
+      panel 'Klíčové vlastnosti' do
+        table_for resource.unified_features do
+          column :title
+        end
+      end
+
+      panel 'Všechny vlastnosti' do
+        table_for resource.features do
           column :title
         end
       end

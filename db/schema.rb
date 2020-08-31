@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_31_095239) do
+ActiveRecord::Schema.define(version: 2020_08_31_121556) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -79,6 +79,15 @@ ActiveRecord::Schema.define(version: 2020_08_31_095239) do
     t.datetime "updated_at", null: false
     t.boolean "valuable", default: false
     t.integer "company"
+    t.bigint "unified_feature_id"
+    t.index ["unified_feature_id"], name: "index_features_on_unified_feature_id"
+  end
+
+  create_table "unified_features", force: :cascade do |t|
+    t.string "title"
+    t.boolean "valuable"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   add_foreign_key "car_features", "cars"
@@ -86,4 +95,5 @@ ActiveRecord::Schema.define(version: 2020_08_31_095239) do
   add_foreign_key "car_prices", "cars"
   add_foreign_key "car_statuses", "cars"
   add_foreign_key "crawls", "cars"
+  add_foreign_key "features", "unified_features"
 end

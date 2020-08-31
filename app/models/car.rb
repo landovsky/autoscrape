@@ -10,6 +10,7 @@ class Car < ApplicationRecord
   has_one :car_status, -> { order(created_at: :desc) }
   has_many :car_prices, dependent: :delete_all
   has_one :car_price, -> { order(created_at: :desc) }
+  has_many :unified_features, through: :features
 
   delegate :sales_status, to: :car_status, allow_nil: true
   delegate :price, to: :car_price, allow_nil: true
@@ -31,8 +32,19 @@ class Car < ApplicationRecord
     (Time.zone.now.year * 12 + Time.zone.now.month) - (manufactured.year * 12 + manufactured.month)
   end
 
+  def source_code
+    case source
+    when 'autodraft'
+      :AD
+    when 'business_lease'
+      :BL
+    else
+      :unknown
+    end
+  end
+
   def self.update_rating
-    Car.where.not(manufactured: nil).each(&:update_rating)
+    Car.available.where.not(manufactured: nil).each(&:update_rating)
   end
 
   def update_rating
