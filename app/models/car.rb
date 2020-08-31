@@ -32,17 +32,6 @@ class Car < ApplicationRecord
     (Time.zone.now.year * 12 + Time.zone.now.month) - (manufactured.year * 12 + manufactured.month)
   end
 
-  def source_code
-    case source
-    when 'autodraft'
-      :AD
-    when 'business_lease'
-      :BL
-    else
-      :unknown
-    end
-  end
-
   def self.update_rating
     Car.available.where.not(manufactured: nil).each(&:update_rating)
   end

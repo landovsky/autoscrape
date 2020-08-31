@@ -43,7 +43,7 @@ ActiveAdmin.register Car do
 
     id_column
     column :title, &:title_link
-    column :src, &:source_code
+    column :src, &:source_badge
     column :car_status, sortable: 'car_statuses.sales_status' do |resource|
       status_tag resource.car_status if resource.car_status
     end

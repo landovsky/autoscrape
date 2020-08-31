@@ -38,4 +38,21 @@ class CarDecorator < ApplicationDecorator
 
     object.car_statuses.last.sales_status
   end
+
+  def source_code
+    case source
+    when 'autodraft'
+      :AD
+    when 'business_lease'
+      :BL
+    else
+      :unknown
+    end
+  end
+
+  def source_badge
+    time_diff = (Time.zone.now - object.created_at) / 60 / 60
+    klass = time_diff <= 24 ? :green : (time_diff > 24 && time_diff <= 48 ? 'pale-green' : :none)
+    h.content_tag :span, source_code, class: "status_tag #{klass}"
+  end
 end
