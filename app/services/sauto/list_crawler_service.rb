@@ -1,20 +1,6 @@
-# Fetch list
-# - update car status (listing does not exist = sold)
-# New car
-# - create car
-# - get some data from json
-# - fetch and parse car detail
-# Existing car
-# - update price from json
-
-# Parsing listing updates
-# - car price
-# - car status
-
-# Parsing detail sets
-# - year/month, vin, color, features
-
 module Sauto
+  include Utils
+
   BASE_URL = 'https://www.sauto.cz/'
 
   class ListCrawlerService
@@ -102,8 +88,7 @@ module Sauto
     end
 
     def open_page(url)
-      uri = URI.parse url
-      response = Net::HTTP.get_response uri
+      response = open_url(url).body
       JSON.parse response.body
     end
 

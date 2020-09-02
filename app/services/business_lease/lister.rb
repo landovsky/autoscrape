@@ -2,6 +2,7 @@ module BusinessLease
   BASE_URL = 'https://www.autapooperaku.cz'
 
   class Lister
+    include Utils
     attr_reader :raw_page, :search, :url
 
     def initialize(url)
@@ -19,7 +20,7 @@ module BusinessLease
     end
 
     def call
-      @raw_page = open_page url
+      @raw_page = open_url(url).body
       @search   = Nokogiri::HTML raw_page
       parse_cars
     end
@@ -35,12 +36,6 @@ module BusinessLease
           car.car_statuses.build
         end
       end
-    end
-
-    def open_page(url)
-      uri = URI.parse url
-      response = Net::HTTP.get_response uri
-      response.body
     end
 
     def self.log(msg, level = :debug)

@@ -1,4 +1,6 @@
 class ListCrawlerService
+  include Utils
+
   attr_reader :raw_page, :search, :url
 
   def initialize(url)
@@ -23,12 +25,12 @@ class ListCrawlerService
   def at_page(page)
     paged_url = url + "&gpage=#{page}"
     log "Parsing #{paged_url}"
-    @raw_page = open_page paged_url
+    @raw_page = open_url(paged_url).body
     @search   = Nokogiri::HTML raw_page
   end
 
   def determine_page_count
-    raw = open_page url
+    raw = open_url(url).body
     search = Nokogiri::HTML raw
     paging = search.css '.gui_list_paging_links_base'
     last_page = paging.map { |p| p.children.map(&:text).first }.reject(&:blank?).last
@@ -46,12 +48,6 @@ class ListCrawlerService
         car.car_statuses.build
       end
     end
-  end
-
-  def open_page(url)
-    uri = URI.parse url
-    response = Net::HTTP.get_response uri
-    response.body
   end
 
   def log(msg, level = :debug)
