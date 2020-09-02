@@ -50,3 +50,4 @@ docker-sync.yml
 .idea/
 
 dump.tar
+.envrc
