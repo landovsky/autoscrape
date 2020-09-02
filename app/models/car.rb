@@ -38,7 +38,7 @@ class Car < ApplicationRecord
 
   def update_rating
     return unless manufactured.present?
-    update rating: (odometer / 1000 + age_months)
+    update rating: car_prices.last.price / (500 - (odometer / 1000 + age_months))
   end
 
   def update_price(new_price)
